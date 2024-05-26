@@ -2,189 +2,163 @@
 #include "Algorithms.hpp"
 #include "Graph.hpp"
 
+#include <sstream>
+
 using namespace std;
 
-TEST_CASE("Test isConnected")
+TEST_CASE("Test graph addition")
 {
-    ariel::Graph g;
+    ariel::Graph g1;
     vector<vector<int>> graph = {
         {0, 1, 0},
         {1, 0, 1},
         {0, 1, 0}};
-    g.loadGraph(graph);
-    CHECK(ariel::Algorithms::isConnected(g) == "1 (true)");
+    g1.loadGraph(graph);
+    ariel::Graph g2;
+    vector<vector<int>> weightedGraph = {
+        {0, 1, 1},
+        {1, 0, 2},
+        {1, 2, 0}};
+    g2.loadGraph(weightedGraph);
+    ariel::Graph g3 = g1 + g2;
+    std::ostringstream oss;
+    oss << g3;
+    std::string printedGraph = oss.str();
+    CHECK(printedGraph == "[0, 2, 1], [2, 0, 3], [1, 3, 0]");
 
-    std::vector<std::vector<int>> graph11 = {
-        {0,0},
-        {0,0}};
-    g.loadGraph(graph11);
-    CHECK(ariel::Algorithms::isConnected(g) == "0 (false)");
-
-    std::vector<std::vector<int>> graph9 = {
-        {0}};
-    g.loadGraph(graph9);
-    CHECK(ariel::Algorithms::isConnected(g) == "1 (true)");
-
-    vector<vector<int>> graph2 = {
-        {0, 1, 1, 0, 0},
-        {1, 0, 1, 0, 0},
-        {1, 1, 0, 1, 0},
-        {0, 0, 1, 0, 0},
-        {0, 0, 0, 0, 0}};
-    g.loadGraph(graph2);
-    CHECK(ariel::Algorithms::isConnected(g) == "0 (false)");
-}
-
-TEST_CASE("Test shortestPath")
-{
-    ariel::Graph g;
-    vector<vector<int>> graph = {
-        {0, 1, 0},
-        {1, 0, 1},
-        {0, 1, 0}};
-    g.loadGraph(graph);
-    CHECK(ariel::Algorithms::shortestPath(g, 0, 2) == "Shortest path from vertex 0 to vertex 2: 2 <- 1 <- 0");
-    CHECK(ariel::Algorithms::shortestPath(g, 3, 2) == "At least one of the vertices you entered is not in the graph");
-
-    vector<vector<int>> graph6 = {
-        {0, 1, 1, 0},
-        {1, 0, 0, 1},
-        {1, 0, 0, 1},
-        {0, 1, 1, 0}};
-    g.loadGraph(graph6); 
-    CHECK(ariel::Algorithms::shortestPath(g, 3, 0) == "Shortest path from vertex 3 to vertex 0: 0 <- 1 <- 3");
-    CHECK(ariel::Algorithms::shortestPath(g, 3, 4) == "At least one of the vertices you entered is not in the graph");
-
-    vector<vector<int>> graph2 = {
-        {0, 1, 1, 0, 0},
-        {1, 0, 1, 0, 0},
-        {1, 1, 0, 1, 0},
-        {0, 0, 1, 0, 0},
-        {0, 0, 0, 0, 0}};
-    g.loadGraph(graph2);
-    CHECK(ariel::Algorithms::shortestPath(g, 0, 4) == "Shortest path from vertex 0 to vertex 4: -1 (No path exists)");
-    CHECK(ariel::Algorithms::shortestPath(g, 0, 5) == "At least one of the vertices you entered is not in the graph");
-    CHECK(ariel::Algorithms::shortestPath(g, 1, 3) == "Shortest path from vertex 1 to vertex 3: 3 <- 2 <- 1");
-
-    std::vector<std::vector<int>> graph9 = {
-        {0}};
-    g.loadGraph(graph9);
-    CHECK(ariel::Algorithms::shortestPath(g, 0, 0) == "Shortest path from vertex 0 to vertex 0: 0");
-}
-TEST_CASE("Test isContainsCycle")
-{
-    ariel::Graph g;
-    vector<vector<int>> graph = {
-        {0, 1, 0},
-        {1, 0, 1},
-        {0, 1, 0}};
-    g.loadGraph(graph);
-    CHECK(ariel::Algorithms::isContainsCycle(g) == "Cycle detected: 0 <- 1 <- 0");
-
-    vector<vector<int>> graph2 = {
-        {0, 1, 1, 0, 0},
-        {1, 0, 1, 0, 0},
-        {1, 1, 0, 1, 0},
-        {0, 0, 1, 0, 0},
-        {0, 0, 0, 0, 0}};
-    g.loadGraph(graph2);
-    CHECK(ariel::Algorithms::isContainsCycle(g) == "Cycle detected: 0 <- 1 <- 0");
-
-    vector<vector<int>> graph7 = {
-         {0, 3, 2, 0, 0},
-         {0, 0, 4, 0, 0},
-         {-2, 3, 0, 4, 0},
-         {0, 0, -4, 0, 15},
-         {0, 0, 0, 5, 0}};
-    g.loadGraph(graph7);
-    CHECK(ariel::Algorithms::isContainsCycle(g) == "Cycle detected: 0 <- 2 <- 1 <- 0");
-}
-TEST_CASE("Test isBipartite")
-{
-    ariel::Graph g;
-    vector<vector<int>> graph = {
-        {0, 1, 0},
-        {1, 0, 1},
-        {0, 1, 0}};
-    g.loadGraph(graph);
-    CHECK(ariel::Algorithms::isBipartite(g) == "Graph is bipartite: A={2, 0} B={1}");
-
-    vector<vector<int>> graph2 = {
-        {0, 1, 1, 0, 0},
-        {1, 0, 1, 0, 0},
-        {1, 1, 0, 1, 0},
-        {0, 0, 1, 0, 0},
-        {0, 0, 0, 0, 0}};
-    g.loadGraph(graph2);
-    CHECK(ariel::Algorithms::isBipartite(g) == "0 (false)");
-
-    vector<vector<int>> graph3 = {
-        {0, 1, 2, 0, 0},
-        {1, 0, 3, 0, 0},
-        {2, 3, 0, 4, 0},
-        {0, 0, 4, 0, 5},
-        {0, 0, 0, 5, 0}};
-    g.loadGraph(graph3);
-    CHECK(ariel::Algorithms::isBipartite(g) == "0 (false)");
-
-    vector<vector<int>> graph6 = {
-        {0, 1, 1, 0},
-        {1, 0, 0, 1},
-        {1, 0, 0, 1},
-        {0, 1, 1, 0}};
-    g.loadGraph(graph6);
-
-    CHECK(ariel::Algorithms::isBipartite(g) == "Graph is bipartite: A={3, 0} B={2, 1}");
-
-    vector<vector<int>> graph8 = {
-    {0, 2, 3, 0, 0},
-    {-2, 0, 0, 0, 0},
-    {3, 0, 0, -1, 0},
-    {0, 0, -1, 0, 4},
-    {0, 0, 0, -3, 0}};
-    g.loadGraph(graph8);
-
-    CHECK(ariel::Algorithms::isBipartite(g) == "Graph is bipartite: A={3, 0} B={4, 2, 1}");
-
-    vector<vector<int>> graph9 = {{0}};
-    g.loadGraph(graph9);
-
-    CHECK(ariel::Algorithms::isBipartite(g) == "0 (false)");
-}
-TEST_CASE("Test invalid graph")
-{
-    ariel::Graph g;
-    vector<vector<int>> graph = {
-        {0, 1, 2, 0},
-        {1, 0, 3, 0},
-        {2, 3, 0, 4},
-        {0, 0, 4, 0},
-        {0, 0, 0, 5}};
-    CHECK_THROWS(g.loadGraph(graph));
-
-    std::vector<std::vector<int>> graph10 = {};
-    CHECK_THROWS(g.loadGraph(graph10));
-}
-TEST_CASE("Test negativeCycle in graph")
-{
-    ariel::Graph g;
-    vector<vector<int>> graph5 = {
-        {0, 1, 1, 0},
-        {1, 0, 0, 1},
-        {1, 0, 0, 1},
-        {0, 1, 1, 0}};
-    g.loadGraph(graph5);
+    std::ostringstream os1;
+    g1 = +g1;
+    os1 << g1;
+    CHECK(os1.str() == "[0, 1, 0], [1, 0, 1], [0, 1, 0]");
     
-    CHECK(ariel::Algorithms::negativeCycle(g) == "No negative cycle found.");
+    std::ostringstream os2;
+    g1 = -g1;
+    os2 << g1;
+    CHECK(os2.str() == "[0, -1, 0], [-1, 0, -1], [0, -1, 0]");
 
-    vector<vector<int>> graph8 = {
-    {0, 2, 3, 0, 0},
-    {-2, 0, 0, 0, 0},
-    {3, 0, 0, -1, 0},
-    {0, 0, -1, 0, -4},
-    {0, 0, 0, -3, 0}};
-    g.loadGraph(graph8);
+    std::ostringstream os3;
+    ariel::Graph g4  = g1 - g2;
+    os3 << g4;
+    CHECK(os3.str() == "[0, -2, -1], [-2, 0, -3], [-1, -3, 0]");
 
-    CHECK(ariel::Algorithms::negativeCycle(g) == "Graph contains negative cycle");
 }
 
+TEST_CASE("Test graph multiplication")
+{
+    ariel::Graph g1;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g1.loadGraph(graph);
+    ariel::Graph g2;
+    vector<vector<int>> weightedGraph = {
+        {0, 1, 1},
+        {1, 0, 2},
+        {1, 2, 0}};
+    g2.loadGraph(weightedGraph);
+    ariel::Graph g4 = g1 * g2;
+    std::ostringstream oss;
+    oss << g4;
+    std::string printedGraph = oss.str();
+
+    // Compare the printed output with the expected string
+    CHECK(printedGraph == "[1, 0, 2], [1, 3, 1], [1, 0, 2]");}
+
+TEST_CASE("Invalid operations")
+{
+    ariel::Graph g1;
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g1.loadGraph(graph);
+    ariel::Graph g2;
+    vector<vector<int>> weightedGraph = {
+        {0, 1, 1, 1},
+        {1, 0, 2, 1},
+        {1, 2, 0, 1}};
+    CHECK_THROWS(g2.loadGraph(weightedGraph));
+    ariel::Graph g5;
+    vector<vector<int>> graph2 = {
+        {0, 1, 0, 0, 1},
+        {1, 0, 1, 0, 0},
+        {0, 1, 0, 1, 0},
+        {0, 0, 1, 0, 1},
+        {1, 0, 0, 1, 0}};
+    g5.loadGraph(graph2);
+    CHECK_THROWS(g5 * g1);
+    CHECK_THROWS(g1 * g2);
+
+    // Addition of two graphs with different dimensions
+    ariel::Graph g6;
+    vector<vector<int>> graph3 = {
+        {0, 1, 0, 0, 1},
+        {1, 0, 1, 0, 0},
+        {0, 1, 0, 1, 0},
+        {0, 0, 1, 0, 1},
+        {1, 0, 0, 1, 0}};
+    g6.loadGraph(graph3);
+    CHECK_THROWS(g1 + g6);
+}
+TEST_CASE("Comparison Operations")
+{
+    vector<vector<int>> graph = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    ariel::Graph g1;
+    g1.loadGraph(graph);
+
+    vector<vector<int>> weightedGraph = {
+        {0, 1, 1},
+        {1, 0, 2},
+        {1, 2, 0}};
+    ariel::Graph g2;
+    g2.loadGraph(weightedGraph);
+
+    CHECK((g1 < g2) == false);
+    CHECK((g1 > g2) == false);
+    CHECK((g1 == g2) == false);
+    CHECK((g1 <= g2) == false);
+    CHECK((g1 >= g2) == false);
+
+    vector<vector<int>> graph4 = {
+        {0, 1, 0, 0},
+        {1, 0, 1, 0},
+        {0, 1, 0, 1},
+        {0, 0, 1, 0}};
+    g2.loadGraph(graph4);
+
+    CHECK((g1 < g2) == true);
+    CHECK((g1 > g2) == false);
+    CHECK((g1 == g2) == false);
+    CHECK((g1 <= g2) == true);
+    CHECK((g1 >= g2) == false);
+
+    vector<vector<int>> graph5 = {
+        {0, 1, 0},
+        {1, 0, 1},
+        {0, 1, 0}};
+    g2.loadGraph(graph5);
+
+    CHECK((g1 < g2) == false);
+    CHECK((g1 > g2) == false);
+    CHECK((g1 == g2) == true);
+    CHECK((g1 <= g2) == true);
+    CHECK((g1 >= g2) == true);
+
+    vector<vector<int>> graph6 = {
+        {0, 1, 0, 1},
+        {1, 0, 1, 1},
+        {1, 1, 0, 1},
+        {0, 1, 1, 0}};
+    g2.loadGraph(graph6);
+
+    CHECK((g1 < g2) == false);
+    CHECK((g1 > g2) == false);
+    CHECK((g1 == g2) == false);
+    CHECK((g1 <= g2) == false);
+    CHECK((g1 >= g2) == false);
+
+}
