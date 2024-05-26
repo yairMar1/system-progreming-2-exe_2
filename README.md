@@ -64,7 +64,9 @@ Comparison Operations
 #### Greater Than or Equal To (`operator>=`)
 - Checks if the current graph contains or is equal to another graph.
 
-### Matrix Multiplication
+**********************
+Matrix Multiplication
+**********************
 
 #### Matrix Multiplication (`operator*`)
 - Multiplies the adjacency matrices of two graphs and returns a new graph representing the product of the matrices.
