@@ -38,38 +38,61 @@ class Graph{
         // Function to check if the graph is directed (symmetric)
         bool isDirected() const;
 
-        // A function that operates a graph on another graph, we will add the second to the first
-        Graph& operator+ (const Graph &graph2);
+        // PART 2
 
-        // Add Unri
+        // Adding the values of two graphs, we get a new matrix. New edges may have been added or removed.
+        Graph operator+ (const Graph &graph2);
+
+        // subtraction the values of two graphs, we get a new matrix. New edges may have been added or removed.
+        Graph operator- (const Graph &graph2);
+
+        // Graph addition, we will update the graph that activated the function. and we will get a reference to the same graph (because there is no need to copy the graph unnecessarily)Graph addition/subtraction, we will update the graph that activated the function. and we will get a reference to the same graph (because there is no need to copy the graph unnecessarily)
+        Graph& operator+= (const Graph &graph2);
+
+        // Graph subtraction, we will update the graph that activated the function. and we will get a reference to the same graph (because there is no need to copy the graph unnecessarily)
+        Graph& operator-= (const Graph &graph2);
+
+        // Unary addition,   
         Graph& operator+ ();
 
-        // A function that operates a graph on another graph, we will subtract the second from the first
-        Graph& operator- (const Graph &graph2);
-
-        // Unary subtraction
+        // unary subtraction
         Graph& operator- ();
 
-        // A function that activates a graph, we will add a number to each edge in the graph
-        Graph& operator+= (int n);
+        // Graph h = (Graph)g * 5;
+        Graph operator* (int num);
 
-        // A function that activates a graph, a number is subtracted from each edge in the graph
-        Graph& operator-= (int n);
+        // increasing the graph by 1 first and then returninig it
+        Graph& operator++ (); // Prefix (++g)
 
-        bool operator> (const Graph &graph2);//TO DO
+        // return the graph and then increasing it by 1
+        Graph operator++ (int num); // Postfix (g++)
 
-        bool operator< (const Graph &graph2);//TO DO
-
-        // A function that checks if two graphs are identical (dimension, edges, and weights of edges)
-        bool operator== (const Graph &graph2);
-
-        Graph& operator++ ();
-
+        //  Prefix (--g)
         Graph& operator-- ();
 
-        friend Graph& operator* (Graph &graph, int n);
-        
+        //  Postfix (g--)
+        Graph operator-- (int num);
 
+        // multiplying the sides of the graph by a scalar (g *= 5;)
+        Graph& operator*= (int num);
+        
+        // Boolean functions that define a relationship between graphs
+        // A graph is identical only if its representation matrix is identical. A graph is smaller than its member only if it is contained in it
+        bool operator< ( Graph &graph2);
+
+        bool operator> (Graph &graph2);
+
+        bool operator== ( Graph &graph2);
+
+        bool operator<= ( Graph &graph2);
+
+        bool operator>= ( Graph &graph2);
+
+        // A function that defines multiplication of graphs, and returns a new graph
+        Graph operator* (const Graph &graph2);
+
+        // This function implements the print operator
+        friend ostream& operator<< (ostream& os, const Graph &graph);
 
     };
 }

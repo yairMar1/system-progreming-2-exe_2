@@ -81,150 +81,235 @@ namespace ariel{
 
     //PART 2
 
-    Graph& Graph::operator+(const Graph &graph2){
-        if(this->getAdjacencyMatrix().size() != graph2.getAdjacencyMatrix().size()){throw std::invalid_argument("Error: The matrices are not the same in their dimensions");}
+    Graph Graph::operator+(const Graph &graph2){
+        if(adjacencyMatrix.size() != graph2.getAdjacencyMatrix().size()){throw std::invalid_argument("Error: The matrices are not the same, in their dimensions");}
         
-        int row = this->getAdjacencyMatrix().size();
+        Graph newGraph;
+        size_t row = adjacencyMatrix.size();
+        vector<vector<int>> newMatrix(row, vector<int>(row,0));
+
         for (size_t i = 0; i < row; i++){
             for (size_t j = 0; j < row; j++){
-                this->getAdjacencyMatrix()[i][j] + graph2.getAdjacencyMatrix()[i][j];
-            }// It could be that new edges are added to the graph that activates the function
-        }
-        return *this;
-    }
-
-    Graph &Graph::operator+(){
-        if(this->getAdjacencyMatrix().size() == NULL){throw std::invalid_argument("Error: The matrix is not exist");}
-
-        int row = this->getAdjacencyMatrix().size();
-        for (size_t i = 0; i < row; i++){
-            for (size_t j = 0; j < row; j++){
-                if(this->getAdjacencyMatrix()[i][j]){// Checking if there is an edge between these two vertices
-                    this->getAdjacencyMatrix()[i][j] = this->getAdjacencyMatrix()[i][j] * 1;}
+                newMatrix[i][j] = adjacencyMatrix[i][j] + graph2.getAdjacencyMatrix()[i][j];
             }
         }
+        newGraph.loadGraph(newMatrix);
+        return newGraph;
+    }
+
+    Graph Graph::operator-(const Graph &graph2){
+        if(adjacencyMatrix.size() != graph2.getAdjacencyMatrix().size()){throw std::invalid_argument("Error: The matrices are not the same, in their dimensions");}
+        
+        Graph newGraph;
+        size_t row = adjacencyMatrix.size();
+        vector<vector<int>> newMatrix(row, vector<int>(row,0));
+
+        for (size_t i = 0; i < row; i++){
+            for (size_t j = 0; j < row; j++){
+                newMatrix[i][j] = adjacencyMatrix[i][j] - graph2.getAdjacencyMatrix()[i][j];
+            }
+        }
+        newGraph.loadGraph(newMatrix);
+        return newGraph;
+    }
+
+    Graph& Graph::operator+=(const Graph &graph2){
+        if(adjacencyMatrix.size() != graph2.getAdjacencyMatrix().size()){throw std::invalid_argument("Error: The matrices are not the same, in their dimensions");}
+        
+        *this = *this + graph2;
         return *this;
     }
 
-    Graph& Graph::operator-(const Graph &graph2){
-        if(this->getAdjacencyMatrix().size() != graph2.getAdjacencyMatrix().size()){throw std::invalid_argument("Error: The matrices are not the same in their dimensions");}
+    Graph& Graph::operator-=(const Graph &graph2){
+        if(adjacencyMatrix.size() != graph2.getAdjacencyMatrix().size()){throw std::invalid_argument("Error: The matrices are not the same, in their dimensions");}
         
-        int row = this->getAdjacencyMatrix().size();
-        for (size_t i = 0; i < row; i++){
-            for (size_t j = 0; j < row; j++){
-                this->getAdjacencyMatrix()[i][j] - graph2.getAdjacencyMatrix()[i][j];
-            }// It could be that new edges are added to the graph that activates the function
-        }
+        *this = *this - graph2;
+        return *this;
+    }
+
+    Graph& Graph::operator+(){
         return *this;
     }
 
     Graph& Graph::operator-(){
-        if(this->getAdjacencyMatrix().size() == NULL){throw std::invalid_argument("Error: The matrix is not exist");}
+        return (*this) *= -1;
+    }
 
-        int row = this->getAdjacencyMatrix().size();
+    Graph Graph::operator*(int num){
+        if(adjacencyMatrix.empty()){throw std::invalid_argument("Error: there is no edges in the graph");}
+
+        Graph newGraph;
+        size_t row = adjacencyMatrix.size();
+        vector<vector<int>> newMatrix(row, vector<int>(row,0));
+
         for (size_t i = 0; i < row; i++){
             for (size_t j = 0; j < row; j++){
-                if(this->getAdjacencyMatrix()[i][j]){// Checking if there is an edge between these two vertices
-                    this->getAdjacencyMatrix()[i][j] = this->getAdjacencyMatrix()[i][j] * (-1);}
+                newMatrix[i][j]  = adjacencyMatrix[i][j] * num;
             }
         }
-        return *this;
+        newGraph.loadGraph(newMatrix);
+        return newGraph;
     }
 
-    Graph& Graph::operator+=(int n){
-        if(this->getAdjacencyMatrix().size() == NULL || this->getAdjacencyMatrix().size() == 0){throw std::invalid_argument("Error: The matrix is not exist");}
-        
-        int row = this->getAdjacencyMatrix().size();
+    Graph& Graph::operator++(){
+        if(adjacencyMatrix.empty()){throw std::invalid_argument("Error: there is no edges in the graph");}
+
+        size_t row = adjacencyMatrix.size();       
         for (size_t i = 0; i < row; i++){
             for (size_t j = 0; j < row; j++){
-                if(this->getAdjacencyMatrix()[i][j]){// We will add weight, only to the edges that exist in the graph
-                this->getAdjacencyMatrix()[i][j] = this->getAdjacencyMatrix()[i][j] + n;}
-            }
-        }
-        return *this;
-    }
-    
-    Graph& Graph::operator-=(int n){
-        if(this->getAdjacencyMatrix().size() == NULL || this->getAdjacencyMatrix().size() == 0){throw std::invalid_argument("Error: The matrix is not exist");}
-
-        int row = this->getAdjacencyMatrix().size();
-        for (size_t i = 0; i < row; i++){
-            for (size_t j = 0; j < row; j++){// We will reduce weight, only to the edges that exist in the graph
-            if(this->getAdjacencyMatrix()[i][j]){
-                this->getAdjacencyMatrix()[i][j] = this->getAdjacencyMatrix()[i][j] - n;}
-            }
-        }
-        return *this;
-    }
-
-    bool Graph::operator>(const Graph &graph2){
-        if(this->getAdjacencyMatrix().size() < graph2.getAdjacencyMatrix().size()){return false;}
-        
-        int row = graph2.getAdjacencyMatrix().size();
-        
-            for (size_t i = 0; i < row; i++){
-                for (size_t j = 0; j < row; j++){
-                    if (this->getAdjacencyMatrix()[i][j] == graph2.getAdjacencyMatrix()[i][j]){return true;}
+                if(adjacencyMatrix[i][j] != 0){
+                   adjacencyMatrix[i][j] = adjacencyMatrix[i][j] + 1;
                 }
             }
-        return false;
+        }
+        return *this;
     }
 
-    bool Graph::operator<(const Graph &graph2){
-        
+    Graph Graph::operator++(int num){ // Postfix (g++) g = g + 1
+     if(adjacencyMatrix.empty()){throw std::invalid_argument("Error: there is no edges in the graph");}
 
-
-        return false;
-    }
-
-    bool Graph::operator==(const Graph &graph2){
-    if(this->getAdjacencyMatrix().size() != graph2.getAdjacencyMatrix().size()){return false;}
-        
-    int row = this->getAdjacencyMatrix().size();
+        Graph newGraph = *this;
+        size_t row = adjacencyMatrix.size();
+       
         for (size_t i = 0; i < row; i++){
             for (size_t j = 0; j < row; j++){
-                if (this->getAdjacencyMatrix()[i][j] != graph2.getAdjacencyMatrix()[i][j]){return false;}
+                if(adjacencyMatrix[i][j] != 0){
+                   adjacencyMatrix[i][j] = adjacencyMatrix[i][j] + 1;
+                }
+            }
+        }
+        return newGraph;
+    }
+
+    Graph& Graph::operator--(){
+        if(adjacencyMatrix.empty()){throw std::invalid_argument("Error: there is no edges in the graph");}
+
+        size_t row = adjacencyMatrix.size();       
+        for (size_t i = 0; i < row; i++){
+            for (size_t j = 0; j < row; j++){
+                if(adjacencyMatrix[i][j] != 0){
+                   adjacencyMatrix[i][j] = adjacencyMatrix[i][j] - 1;
+                }
+            }
+        }
+        return *this;
+    }
+
+    Graph Graph::operator--(int num){
+        if(adjacencyMatrix.empty()){throw std::invalid_argument("Error: there is no edges in the graph");}
+
+        Graph newGraph = *this;
+        size_t row = adjacencyMatrix.size();
+       
+        for (size_t i = 0; i < row; i++){
+            for (size_t j = 0; j < row; j++){
+                if(adjacencyMatrix[i][j] != 0){
+                   adjacencyMatrix[i][j] = adjacencyMatrix[i][j] - 1;
+                }
+            }
+        }
+        return newGraph;
+    }
+
+    Graph& Graph::operator*=(int num){
+        if(adjacencyMatrix.empty()){throw std::invalid_argument("Error: there is no edges in the graph");}
+
+        int row = adjacencyMatrix.size();
+        for (size_t i = 0; i < row; i++){
+            for (size_t j = 0; j < row; j++){
+                adjacencyMatrix[i][j] = adjacencyMatrix[i][j] * num;
+            }
+        }
+        return *this;
+    }
+
+    bool Graph::operator<(Graph &graph2){
+    if(adjacencyMatrix == graph2.getAdjacencyMatrix()){return false;}
+
+    size_t n1 = adjacencyMatrix.size();
+    size_t n2 = graph2.getAdjacencyMatrix().size();
+
+    if(n1 > n2){return false;}
+
+    for(size_t i = 0; i <= n2 - n1; i++){
+        for(size_t j = 0; j <= n2 - n1; j++){
+            if(adjacencyMatrix[i][j] == graph2.getAdjacencyMatrix()[i][j]){
+                bool match = true;
+                for(size_t k = 0; k < n1; k++){
+                    for(size_t l = 0; l < n1; l++){
+                        if(adjacencyMatrix[k][l] != graph2.getAdjacencyMatrix()[i+k][j+l]){
+                            match = false;
+                            break;
+                        }
+                    }
+                }
+                if(match) return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool Graph::operator>(Graph &graph2){
+    return graph2 < *this;
+}
+
+bool Graph::operator==(Graph &graph2){
+        if(adjacencyMatrix.size() != graph2.getAdjacencyMatrix().size()){return false;}
+
+        size_t row = adjacencyMatrix.size();
+        for (size_t i = 0; i < row; i++){
+            for (size_t j = 0; j < row; j++){
+                if(adjacencyMatrix[i][j] != graph2.getAdjacencyMatrix()[i][j]){return false;};
             }
         }
         return true;
+
+        //return !(*this < graph2) && !(*this > graph2);
     }
 
-    Graph &Graph::operator++(){
-        if(this->getAdjacencyMatrix().size() == NULL || this->getAdjacencyMatrix().size() == 0){throw std::invalid_argument("Error: The matrix is not exist");}
-
-        int row = this->getAdjacencyMatrix().size();
-        for (size_t i = 0; i < row; i++){
-            for (size_t j = 0; j < row; j++){
-                if(this->getAdjacencyMatrix()[i][j]){// Checking if there is an edge between these two vertices
-                    this->getAdjacencyMatrix()[i][j] = this->getAdjacencyMatrix()[i][j] + 1;}
-            }
-        }
-        return *this;
+    bool Graph::operator<=(Graph &graph2){
+        return (*this < graph2) || (graph2 == *this);
     }
 
-    Graph &Graph::operator--(){
-        if(this->getAdjacencyMatrix().size() == NULL || this->getAdjacencyMatrix().size() == 0){throw std::invalid_argument("Error: The matrix is not exist");}
-
-        int row = this->getAdjacencyMatrix().size();
-        for (size_t i = 0; i < row; i++){
-            for (size_t j = 0; j < row; j++){
-                if(this->getAdjacencyMatrix()[i][j]){// Checking if there is an edge between these two vertices
-                    this->AdjacencyMatrix[i][j] = this->getAdjacencyMatrix()[i][j] - 1;}
-            }
-        }
-        return *this;
+    bool Graph::operator>=(Graph &graph2){
+        return graph2 <= *this;
     }
-    
-    Graph &operator*(Graph &graph, int n){
-        if(graph.getAdjacencyMatrix().empty()){throw std::invalid_argument("Error: The matrix is not exist");}
 
-        int row = graph.getAdjacencyMatrix().size();
-        for (size_t i = 0; i < row; i++){
-            for (size_t j = 0; j < row; j++){
-                if(graph.adjacencyMatrix[i][j] != 0){// Checking if there is an edge between these two vertices
-                    graph.adjacencyMatrix[i][j] *= n;}
+    Graph Graph::operator*(const Graph &graph2){
+        if (adjacencyMatrix.size() != graph2.getAdjacencyMatrix().size()){throw std::invalid_argument("Error: The matrices are not the same, in their dimensions");}
+
+        size_t n1 = adjacencyMatrix.size();
+        size_t n2 = graph2.getAdjacencyMatrix().size();
+
+        Graph newGraph; // Creating a new graph that we will return
+        vector<vector<int>> newMatrix(n1, vector<int>(n1,0));
+
+        for(size_t i = 0; i < n1; i++){
+            for(size_t j = 0; j < n1; j++){
+                for(size_t k = 0; k < n1; k++){
+                    newMatrix[i][j] += adjacencyMatrix[i][k] * graph2.getAdjacencyMatrix()[k][j];
+                }
             }
         }
-        return graph;
+        newGraph.loadGraph(newMatrix);
+        return newGraph;
+    }
+
+    ostream &operator<<(ostream &os, const Graph &graph){
+        size_t n1 = graph.getAdjacencyMatrix().size();
+
+        for(size_t i = 0; i < n1; i++){
+            os << "[";
+            for(size_t j = 0; j < n1; j++){
+                if(j == n1 - 1){os << graph.getAdjacencyMatrix()[i][j];}
+                else{
+                os << graph.getAdjacencyMatrix()[i][j] << ", ";
+                }
+            }
+            os << "] " ;
+            if (i != n1 -1){os << ", ";}
+        }
+        return os;
     }
 };
